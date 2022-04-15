@@ -1,0 +1,12 @@
+Table: Connect4
+  Columns:
+    holes[6][7]: I'm thinking this could be an array of numbers, initially set to 0, where if there
+      is a 0, there is no piece there. If there is a 1, player 1 has a piece there, and if a 2, then
+      player 2 has a piece there
+
+    player1Id: Pretty self-explanatory. This will have a 1 to many relationship with the user, where a user
+    can be player 1 in many games but a speciic game can only have one player 1
+
+    player2Id: Same as above, but for player 2
+
+    id: An id for the game
