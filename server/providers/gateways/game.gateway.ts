@@ -5,11 +5,12 @@ import { OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect, WebSocketServe
 import { JwtService } from '../services/jwt.service';
 import { UseGuards } from '@nestjs/common';
 import { GamesService } from '../services/games.service';
+import { Move } from 'server/entities/move.entity';
 
 class TurnPayload {
-  row: number;
-  column: number;
-  player: number;
+  gameRoomId: number;
+  moveOrder: number;
+  moveColumn: number;
 }
 
 @WebSocketGateway()
@@ -42,7 +43,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('turn')
   public async handleTurn(client: any, payload: TurnPayload) {
     //Store the turn in the database
-    const board = await this.gamesService.handleTurn(payload);
+    let move = new Move();
+    move.gameRoomId = client.handshake.query.roomId as number;
+    move.moveOrder = payload.moveOrder;
+    move.moveColumn = payload.moveColumn;
+    await this.gamesService.handleTurn(move);
+    const board = await this.gamesService.getMoves(move.gameRoomId);
     //Send the turn to all clients in the room
     this.server.to(`${client.handshake.query.roomId}`).emit('turn', board);
     
