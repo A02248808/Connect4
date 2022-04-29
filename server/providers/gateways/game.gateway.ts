@@ -4,7 +4,7 @@ import { GatewayAuthGuard } from '../guards/gatewayauth.guard';
 import { OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect, WebSocketServer, WebSocketGateway, WsException, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { JwtService } from '../services/jwt.service';
 import { UseGuards } from '@nestjs/common';
-import { GamesService } from '../service/games.service';
+import { GamesService } from '../services/games.service';
 
 class TurnPayload {
   row: number;
