@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GameRoom } from 'server/entities/game_room.entity';
 import { Repository } from 'typeorm';
+import { Move } from 'server/entities/move.entity';
 
 @Injectable()
 export class GamesService {
   constructor(
     @InjectRepository(GameRoom)
     private readonly gameRoomRepository: Repository<GameRoom>,
+    @InjectRepository(Move)
+    private readonly moveRepository: Repository<Move>,
   ) {}
 
   findAll(): Promise<GameRoom[]> {
@@ -24,5 +27,13 @@ export class GamesService {
 
   async remove(gameRoom: GameRoom) {
     return this.gameRoomRepository.delete(gameRoom);
+  }
+
+  async handleTurn(move: Move) {
+    return this.moveRepository.save(move);
+  }
+
+  async getMoves(gameRoomId: number) {
+    return this.moveRepository.find({ where: { gameRoomId } });
   }
 }
