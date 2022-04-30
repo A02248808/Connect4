@@ -43,9 +43,9 @@ export const Home = () => {
           Admin
         </Button>
       )}
-      <section>
-        <Ping />
-      </section>
+      <Button type="button" onClick={() => navigate('/game_room/1')}>
+        Play Game
+      </Button>
     </div>
   );
 };
