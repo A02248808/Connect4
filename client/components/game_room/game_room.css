@@ -6,12 +6,30 @@
 
 .backButton {
   padding: 12px 20px;
-  margin-left: 20px;
+  left: 20px;
+  top: 5px;
   background-color: rgba(29, 78, 216);
   color: white;
   
   position: absolute;
   border-radius: 5px;
+}
+
+.resetButton {
+  padding: 12px 20px;
+  right: 20px;
+  top: 5px;
+  background-color: rgba(29, 78, 216);
+  color: white;
+  
+  position: absolute;
+  border-radius: 5px;
+}
+
+.info {
+  text-align: center;
+  font-size: 8vh;
+  text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
 .gameSquare {
@@ -21,17 +39,20 @@
   aspect-ratio: 1;
 }
 
-.gameSquare:hover {
+.gameColumnHover {
   cursor: pointer;
+  background-color: lightblue;
 }
 
 .gameArea {
   width: 100vw;
   max-width: 100vh; 
-  margin: 5px auto;
+  margin: auto;
   padding: 10px;
 
   background-color: black;
+  position: relative;
+  top: 5px;
 
   display: grid;
   grid-gap: 10px;
@@ -52,5 +73,15 @@
 
   to {
     transform: translateY(0);
+  }
+}
+
+@keyframes reset {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-500px);
   }
 }
