@@ -6,11 +6,13 @@ import { Move } from 'server/entities/move.entity';
 import { GamesService } from 'server/providers/services/games.service';
 import { JwtService } from 'server/providers/services/jwt.service';
 import { GuardUtil } from 'server/providers/util/guard.util';
+import { GameGateway } from 'server/providers/gateways/game.gateway';
+
 
 @Module({
   imports: [TypeOrmModule.forFeature([GameRoom, Move])],
   controllers: [GameRoomsController],
-  providers: [GuardUtil, GamesService, JwtService],
+  providers: [GuardUtil, GamesService, JwtService, GameGateway],
   exports: [],
 })
 export class GameRoomsModule {}

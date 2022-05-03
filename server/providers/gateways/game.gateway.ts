@@ -16,7 +16,7 @@ class TurnPayload {
 
  @WebSocketGateway()
  @UseGuards(GatewayAuthGuard)
- export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
    @WebSocketServer()
    server: Server;
 
@@ -28,9 +28,9 @@ class TurnPayload {
      try {
        // Get the auth token from the client and parse, it it fails it wont connect
        const jwt = client.handshake.auth.token;
-       const jwtBody = this.jwtService.parseToken(jwt);
+       this.jwtService.parseToken(jwt);
        //Add them to the room
-       client.join(client.handshake.query.roomId as unknown as string);
+       client.join(client.handshake.query.room as unknown as string);
      }
      catch (e) {
        throw new WsException('Invalid token');

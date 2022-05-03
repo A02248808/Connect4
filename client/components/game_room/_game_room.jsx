@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { GameSquare } from './game_square';
 import { debug } from 'console';
 import './game_room.css';
+import { useTurns } from '../../utils/use_turns';
 
 export const GameRoom = () => {
   const rowCount = 6;
@@ -13,6 +14,8 @@ export const GameRoom = () => {
   const [user, setUser] = useState(null);
   const api = useContext(ApiContext);
   const { id } = useParams();
+  console.log(id);
+  const [board, doTurn] = useTurns(id);
   const navigate = useNavigate();
 
   const isP1Turn = useRef(true);
