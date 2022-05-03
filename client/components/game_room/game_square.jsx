@@ -1,6 +1,6 @@
-export const GameSquare = ({ id, color, children }) => {
+export const GameSquare = ({ id, children }) => {
   return (
-    <div id={id} className={`gameSquare ${color}`}>
+    <div id={id} className="gameSquare">
       {children}
     </div>
   );
