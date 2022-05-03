@@ -1,4 +1,4 @@
-import { useState, useRef, useEffectm, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { io } from 'socket.io-client';
 import { AuthContext } from './auth_context';
 
@@ -6,20 +6,21 @@ export const useTurns = ({ room }) => {
 
   const [board, setBoard] = useState([]);
   const [socket, setSocket] = useState(null);
-  const authToken = useContext(AuthContext);
+  const [ authToken ] = useContext(AuthContext);
 
   useEffect(() => {
+    console.log(room)
     const newSocket = io({
       auth: {
         token: authToken
       },
       query: {
-        room
+        room:'1'
       }
     });
     setSocket(newSocket);
     newSocket.on('turn', (board) => {
-      setTurns(board);
+      setBoard(board);
     });
     return () => {
       newSocket.off('turn');

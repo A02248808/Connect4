@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { config } from './database/config';
 import { GameRoomsModule } from './modules/game_rooms.module';
 import { UsersModule } from './modules/users.module';
-import { PingGateway } from './providers/gateways/ping.gateway';
 import { AuthGuard } from './providers/guards/auth.guard';
 import { RolesGuard } from './providers/guards/roles.guard';
 import { JwtService } from './providers/services/jwt.service';
@@ -17,7 +16,6 @@ import { GuardUtil } from './providers/util/guard.util';
   imports: [TypeOrmModule.forRoot(config), UsersModule, GameRoomsModule],
   controllers: [AppController],
   providers: [
-    PingGateway,
     UsersService,
     RolesService,
     JwtService,

@@ -6,6 +6,7 @@ import { GameSquare } from './game_square';
 import { debug } from 'console';
 import { checkForWin } from './win_conditions';
 import './game_room.css';
+import { useTurns } from '../../utils/use_turns';
 import { removeAllListeners } from 'process';
 
 export const GameRoom = () => {
@@ -15,6 +16,8 @@ export const GameRoom = () => {
   const [user, setUser] = useState(null);
   const api = useContext(ApiContext);
   const { id } = useParams();
+  console.log(id);
+  const [board, doTurn] = useTurns(id);
   const navigate = useNavigate();
 
   const isP1Turn = useRef(true);
