@@ -62,7 +62,7 @@ export const Home = () => {
         <Game action={() => setIsOpen(true)}>+</Game>
         {gameRooms.map((game) => {
           return (
-            <Game key={game.id} to={`game_room/${game.id}`}>
+            <Game key={game.id} to={`game_rooms/${game.id}`}>
               {game.name}
             </Game>
           );

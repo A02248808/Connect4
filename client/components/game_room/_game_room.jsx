@@ -13,10 +13,8 @@ export const GameRoom = () => {
   const rowCount = 6;
   const colCount = 7;
 
-  const [user, setUser] = useState(null);
   const api = useContext(ApiContext);
   const { id } = useParams();
-  console.log(id)
   const navigate = useNavigate();
 
   const isP1Turn = useRef(true);
@@ -39,32 +37,16 @@ export const GameRoom = () => {
       }
     });
     setSocket(newSocket);
+    newSocket.on('initial-moves', (data) => {
+      data.forEach((move) => {
+        clickSquare(move.moveOrder, move.moveColumn);
+      });
+    });
     newSocket.on('turn', (board) => {
       console.log(board)
-      let rowCount = board.moveOrder;
+      let currentRow = board.moveOrder;
       let column = board.moveColumn;
-      if (currentRow < rowCount) {
-        let gamePiece = document.getElementById(`piece-${currentRow}-${column}`);
-  
-        let currentColor = isP1Turn.current ? 'red' : 'yellow';
-        gamePiece.style.backgroundColor = currentColor;
-        gamePiece.style.animation = 'fall 0.5s';
-  
-        if (checkForWin(currentColor, rowCount, colCount)) {
-          setInfo(`${currentColor.charAt(0).toUpperCase() + currentColor.slice(1)} wins!!`);
-          removeListeners();
-  
-          // remove column hover class
-          Array.from(document.getElementsByClassName('gameColumnHover')).forEach((item) => {
-            item.classList.remove('gameColumnHover');
-          });
-        } else {
-          isP1Turn.current = !isP1Turn.current;
-          whatRowPerColumn.current[column]++;
-  
-          setInfo(`${isP1Turn.current ? "Red's" : "Yellow's"} turn`);
-        }
-      }
+      clickSquare(currentRow, column);
     });
     newSocket.on('reset', () => {
       isP1Turn.current = true;
@@ -90,11 +72,33 @@ export const GameRoom = () => {
     };
   }, []);
 
+  const clickSquare = (currentRow, column) => {
+    if (currentRow < rowCount) {
+      let gamePiece = document.getElementById(`piece-${currentRow}-${column}`);
+
+      let currentColor = isP1Turn.current ? 'red' : 'yellow';
+      gamePiece.style.backgroundColor = currentColor;
+      gamePiece.style.animation = 'fall 0.5s';
+
+      if (checkForWin(currentColor, rowCount, colCount)) {
+        setInfo(`${currentColor.charAt(0).toUpperCase() + currentColor.slice(1)} wins!!`);
+        removeListeners();
+
+        // remove column hover class
+        Array.from(document.getElementsByClassName('gameColumnHover')).forEach((item) => {
+          item.classList.remove('gameColumnHover');
+        });
+      } else {
+        isP1Turn.current = !isP1Turn.current;
+        whatRowPerColumn.current[column]++;
+
+        setInfo(`${isP1Turn.current ? "Red's" : "Yellow's"} turn`);
+      }
+    }
+  }
+
   // runs only on first render
   useEffect(async () => {
-    const res = await api.get('/users/me');
-    setUser(res.user);
-
     let key = 1;
     let tempArr = [];
     for (let i = 0; i < rowCount; i++) {
@@ -110,7 +114,6 @@ export const GameRoom = () => {
         key += 1;
       }
     }
-
     setGameSquares(tempArr);
   }, []);
 
@@ -154,7 +157,7 @@ export const GameRoom = () => {
   };
 
   const resetGame = () => {
-    socket.emit('reset', { gameRoomId: room });
+    socket.emit('reset', { gameRoomId: id });
   };
 
   return (

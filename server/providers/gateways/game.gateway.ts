@@ -23,17 +23,20 @@ class TurnPayload {
      //This one is subject to naming
      private gamesService: GamesService) {}
 
-   handleConnection(client: any, ...args: any[]) {
+   async handleConnection(client: any, ...args: any[]) {
      try {
-       // Get the auth token from the client and parse, it it fails it wont connect
-       const jwt = client.handshake.auth.token;
-       this.jwtService.parseToken(jwt);
-       console.log("Client Connected to room " + client.handshake.query.room);
-       //Add them to the room
-       client.join(client.handshake.query.room as unknown as string);
+      // Get the auth token from the client and parse, it it fails it wont connect
+      const jwt = client.handshake.auth.token;
+      await this.jwtService.parseToken(jwt);
+      console.log("Client Connected to room " + client.handshake.query.room);
+      //Add them to the room
+      client.join(client.handshake.query.room as unknown as string);
+      //Send the moves to the client
+      const moves = await this.gamesService.getMoves(client.handshake.query.room as number);
+      client.emit('initial-moves', moves);
      }
      catch (e) {
-       throw new WsException('Invalid token');
+      throw new WsException('Invalid token');
      }
    }
 
@@ -43,6 +46,7 @@ class TurnPayload {
 
   @SubscribeMessage('turn')
   public async handleTurn(client: any, payload: TurnPayload) {
+    console.log('Client Turn');
     //Store the turn in the database
     let move = new Move();
     move.gameRoomId = client.handshake.query.room as number;
@@ -50,7 +54,7 @@ class TurnPayload {
     move.moveColumn = payload.moveColumn;
     await this.gamesService.handleTurn(move);
     //Send the turn to all clients in the room
-    this.server.to(`${client.handshake.query.roomId}`).emit('turn', move);
+    this.server.to(`${client.handshake.query.room}`).emit('turn', move);
    }
 
   @SubscribeMessage('reset')
