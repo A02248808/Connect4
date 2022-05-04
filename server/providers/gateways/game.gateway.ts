@@ -9,7 +9,6 @@ import { Move } from 'server/entities/move.entity';
 
 
 class TurnPayload {
-  gameRoomId: number;
   moveOrder: number;
   moveColumn: number;
 }
@@ -29,6 +28,7 @@ class TurnPayload {
        // Get the auth token from the client and parse, it it fails it wont connect
        const jwt = client.handshake.auth.token;
        this.jwtService.parseToken(jwt);
+       console.log("Client Connected to room " + client.handshake.query.room);
        //Add them to the room
        client.join(client.handshake.query.room as unknown as string);
      }
@@ -45,13 +45,20 @@ class TurnPayload {
   public async handleTurn(client: any, payload: TurnPayload) {
     //Store the turn in the database
     let move = new Move();
-    move.gameRoomId = client.handshake.query.roomId as number;
+    move.gameRoomId = client.handshake.query.room as number;
     move.moveOrder = payload.moveOrder;
     move.moveColumn = payload.moveColumn;
     await this.gamesService.handleTurn(move);
-    const board = await this.gamesService.getMoves(move.gameRoomId);
     //Send the turn to all clients in the room
-    this.server.to(`${client.handshake.query.roomId}`).emit('turn', board);
-    
+    this.server.to(`${client.handshake.query.roomId}`).emit('turn', move);
    }
+
+  @SubscribeMessage('reset')
+  public async handleReset(client: any) {
+    //Reset the game
+    const gameRoomId = client.handshake.query.gameRoomId as number;
+    await this.gamesService.resetGame(gameRoomId);
+    //Send the reset to all clients in the room
+    this.server.to(`${gameRoomId}`).emit('reset');
+  }
  }

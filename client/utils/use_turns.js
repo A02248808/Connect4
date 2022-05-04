@@ -22,16 +22,23 @@ export const useTurns = ({ room }) => {
     newSocket.on('turn', (board) => {
       setBoard(board);
     });
+    newSocket.on('reset', () => {
+      setBoard([]);
+    })
     return () => {
       newSocket.off('turn');
+      newSocket.off('reset');
       newSocket.disconnect();
     };
   }, []);
 
-  const doTurn = (row, column, player) => {
-    socket.emit('turn', { row, column, player });
+  const doTurn = (row, column) => {
+    socket.emit('turn', { gameRoomId: room, moveOrder: row, moveColumn: column });
   }
 
+  const resetBoard = () => {
+    socket.emit('reset', { gameRoomId: room });
+  }
 
-  return [board, doTurn];
+  return [board, doTurn, resetBoard];
 }
