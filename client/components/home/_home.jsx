@@ -5,6 +5,7 @@ import { AuthContext } from '../../utils/auth_context';
 import { RolesContext } from '../../utils/roles_context';
 import { Button } from '../common/button';
 import { Game } from './game';
+import { GameRoomModal } from './new_game_modal';
 
 export const Home = () => {
   const [, setAuthToken] = useContext(AuthContext);
@@ -15,6 +16,7 @@ export const Home = () => {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [gameRooms, setGameRooms] = useState([]);
 
@@ -37,30 +39,35 @@ export const Home = () => {
     return <div>Loading...</div>;
   }
 
+  const createGame = async (name) => {
+    setIsOpen(false);
+    const { gameRoom } = await api.post('/game_rooms', { name });
+    setGameRooms([...gameRooms, gameRoom]);
+  };
+
   return (
     <div className="wrapper">
-      <div className="p-4">
-        <h1>Welcome {user.firstName}</h1>
-        <Button type="button" onClick={logout}>
+      <h1>Welcome to Connect4</h1>
+      <div className="top-bar">
+        <Button className="game" type="button" onClick={logout}>
           Logout
         </Button>
         {roles.includes('admin') && (
-          <Button type="button" onClick={() => navigate('/admin')}>
+          <Button type="button" className="game" onClick={() => navigate('/admin')}>
             Admin
           </Button>
         )}
-        <Button type="button" onClick={() => navigate('/game_room/1')}>
-          Play Game
-        </Button>
       </div>
       <div className="game-select">
+        <Game action={() => setIsOpen(true)}>+</Game>
         {gameRooms.map((game) => {
           return (
-            <Game key={game.id} to={`game_rooms/${game.id}`}>
+            <Game key={game.id} to={`game_room/${game.id}`}>
               {game.name}
             </Game>
           );
         })}
+        {isOpen ? <GameRoomModal createGame={createGame} closeModal={() => setIsOpen(false)} /> : null}
       </div>
     </div>
   );

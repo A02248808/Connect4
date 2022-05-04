@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export const Game = ({ children, to, action }) => {
   if (to) {
     return (
@@ -7,7 +9,11 @@ export const Game = ({ children, to, action }) => {
     );
   }
   if (action) {
-    return <button onClick={action}>{children}</button>;
+    return (
+      <button className="game" onClick={action}>
+        {children}
+      </button>
+    );
   }
   return null;
 };
