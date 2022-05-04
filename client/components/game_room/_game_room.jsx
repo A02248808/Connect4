@@ -21,6 +21,7 @@ export const GameRoom = () => {
 
   const isP1Turn = useRef(true);
   const whatRowPerColumn = useRef(Array(colCount).fill(0));
+  const [gameComplete, setGameComplete] = useState(false);
 
   const [gameSquares, setGameSquares] = useState([]);
   const [info, setInfo] = useState("Red's turn");
@@ -161,8 +162,8 @@ export const GameRoom = () => {
       <button className="backButton" onClick={() => navigate('/')}>
         Back
       </button>
-      <button className="resetButton" onClick={resetGame}>
-        Reset Game
+      <button className={`newGameButton ${gameComplete ? '' : 'opacity-50 cursor-default'}`} onClick={resetGame}>
+        New Game
       </button>
       <div className="gameArea">{gameSquares}</div>
       <p className={`info ${isP1Turn.current ? 'text-red-600' : 'text-yellow-500'}`}>{info}</p>

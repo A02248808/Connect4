@@ -1,5 +1,35 @@
-@tailwind base;
+:root {
+  --primary-color: #f09b3a;
+  --secondary-color: #3a8ff0;
+}
 
-@tailwind components;
+#app {
+  height: 100vh;
+}
 
-@tailwind utilities;
+.game-select {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 80%;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.game {
+  background-color: var(--primary-color);
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  margin: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
