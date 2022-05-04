@@ -36,4 +36,8 @@ export class GamesService {
   async getMoves(gameRoomId: number) {
     return this.moveRepository.find({ where: { gameRoomId } });
   }
+
+  async resetGame(gameRoomId: number) {
+    return this.moveRepository.delete(gameRoomId);
+  }
 }
