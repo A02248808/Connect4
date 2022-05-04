@@ -4,6 +4,7 @@ import { ApiContext } from '../../utils/api_context';
 import { AuthContext } from '../../utils/auth_context';
 import { RolesContext } from '../../utils/roles_context';
 import { Button } from '../common/button';
+import { Game } from './game';
 
 export const Home = () => {
   const [, setAuthToken] = useContext(AuthContext);
@@ -14,7 +15,12 @@ export const Home = () => {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+
+  const [gameRooms, setGameRooms] = useState([]);
+
   useEffect(async () => {
+    const { gameRooms } = await api.get('/game_rooms');
+    setGameRooms(gameRooms);
     const res = await api.get('/users/me');
     setUser(res.user);
     setLoading(false);
@@ -32,19 +38,30 @@ export const Home = () => {
   }
 
   return (
-    <div className="p-4">
-      <h1>Welcome {user.firstName}</h1>
-      <Button type="button" onClick={logout}>
-        Logout
-      </Button>
-      {roles.includes('admin') && (
-        <Button type="button" onClick={() => navigate('/admin')}>
-          Admin
+    <div className="wrapper">
+      <div className="p-4">
+        <h1>Welcome {user.firstName}</h1>
+        <Button type="button" onClick={logout}>
+          Logout
         </Button>
-      )}
-      <Button type="button" onClick={() => navigate('/game_room/1')}>
-        Play Game
-      </Button>
+        {roles.includes('admin') && (
+          <Button type="button" onClick={() => navigate('/admin')}>
+            Admin
+          </Button>
+        )}
+        <Button type="button" onClick={() => navigate('/game_room/1')}>
+          Play Game
+        </Button>
+      </div>
+      <div className="game-select">
+        {gameRooms.map((game) => {
+          return (
+            <Game key={game.id} to={`game_rooms/${game.id}`}>
+              {game.name}
+            </Game>
+          );
+        })}
+      </div>
     </div>
   );
 };
