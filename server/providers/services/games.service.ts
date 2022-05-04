@@ -29,11 +29,11 @@ export class GamesService {
     return this.gameRoomRepository.delete(gameRoom);
   }
 
-  async handleTurn(move: Move) {
+  async handleTurn(move: Move): Promise<Move> {
     return this.moveRepository.save(move);
   }
 
-  async getMoves(gameRoomId: number) {
+  async getMoves(gameRoomId: number): Promise<Move[]> {
     return this.moveRepository.find({ where: { gameRoomId } });
   }
 
