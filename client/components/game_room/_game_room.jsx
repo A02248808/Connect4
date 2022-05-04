@@ -99,12 +99,13 @@ export const GameRoom = () => {
 
   // runs only on first render
   useEffect(async () => {
+    // create list of GameSquares with animated circle divs inside them
     let key = 1;
     let tempArr = [];
     for (let i = 0; i < rowCount; i++) {
       tempArr.push([]);
       for (let j = 0; j < colCount; j++) {
-        let squareId = `square-${rowCount - 1 - i}-${j}`;
+        let squareId = `square-${rowCount - 1 - i}-${j}`; // squareId -> square-rowNumber-colNumber (square-0-0 is bottom left square)
         let pieceId = `piece-${rowCount - 1 - i}-${j}`;
         tempArr[i].push(
           <GameSquare id={squareId} key={key}>
@@ -118,7 +119,7 @@ export const GameRoom = () => {
   }, []);
 
   useEffect(async () => {
-    addListeners();
+    addListeners(); // adds onclick and hover listeners
   }, [gameSquares]);
 
   const squareOnClick = (e) => {
@@ -128,6 +129,7 @@ export const GameRoom = () => {
     socket.emit('turn', { moveOrder: currentRow, moveColumn: column });
   };
 
+  // blue background on column your mouse is on
   const toggleColumnHover = (e) => {
     let colNum = e.currentTarget.id.split('-')[2];
     let squares = Array.from(document.getElementsByClassName('gameSquare'));
