@@ -20,6 +20,7 @@ export const GameRoom = () => {
   const isP1Turn = useRef(true);
   const whatRowPerColumn = useRef(Array(colCount).fill(0));
   const [gameComplete, setGameComplete] = useState(false);
+  const haveBoardInteraction = useRef(true);
 
   const [gameSquares, setGameSquares] = useState([]);
   const [info, setInfo] = useState("Red's turn");
@@ -49,11 +50,10 @@ export const GameRoom = () => {
       clickSquare(currentRow, column);
     });
     newSocket.on('reset', () => {
+      setGameComplete(false);
+      haveBoardInteraction.current = true;
       isP1Turn.current = true;
       setInfo("Red's turn");
-  
-      // add listeners again
-      addListeners();
   
       // reset current row to drop pieces on
       whatRowPerColumn.current = Array(colCount).fill(0);
@@ -81,8 +81,9 @@ export const GameRoom = () => {
       gamePiece.style.animation = 'fall 0.5s';
 
       if (checkForWin(currentColor, rowCount, colCount)) {
+        setGameComplete(true);
+        haveBoardInteraction.current = false;
         setInfo(`${currentColor.charAt(0).toUpperCase() + currentColor.slice(1)} wins!!`);
-        removeListeners();
 
         // remove column hover class
         Array.from(document.getElementsByClassName('gameColumnHover')).forEach((item) => {
@@ -123,6 +124,7 @@ export const GameRoom = () => {
   }, [gameSquares]);
 
   const squareOnClick = (e) => {
+    if (!haveBoardInteraction.current) return;
     let square = e.currentTarget;
     let column = square.id.split('-')[2];
     let currentRow = whatRowPerColumn.current[column];
@@ -130,33 +132,47 @@ export const GameRoom = () => {
   };
 
   // blue background on column your mouse is on
-  const toggleColumnHover = (e) => {
+  const columnHoverOn = (e) => {
+    if (!haveBoardInteraction.current) return;
     let colNum = e.currentTarget.id.split('-')[2];
     let squares = Array.from(document.getElementsByClassName('gameSquare'));
     squares.forEach((square) => {
       if (square.id.split('-')[2] == colNum) {
-        square.classList.toggle('gameColumnHover');
+        square.classList.add('gameColumnHover');
+      }
+    });
+  };
+  const columnHoverOff = (e) => {
+    if (!haveBoardInteraction.current) return;
+    let colNum = e.currentTarget.id.split('-')[2];
+    let squares = Array.from(document.getElementsByClassName('gameSquare'));
+    squares.forEach((square) => {
+      if (square.id.split('-')[2] == colNum) {
+        square.classList.remove('gameColumnHover');
       }
     });
   };
 
   const addListeners = () => {
     let squares = Array.from(document.getElementsByClassName('gameSquare'));
+    console.log('Adding Listeners: ' + squares.length);
     squares.forEach((square) => {
       square.addEventListener('click', squareOnClick);
-      square.addEventListener('mouseenter', toggleColumnHover);
-      square.addEventListener('mouseleave', toggleColumnHover);
+      square.addEventListener('mouseenter', columnHoverOn);
+      square.addEventListener('mouseleave', columnHoverOff);
     });
   };
 
-  const removeListeners = () => {
-    let squares = Array.from(document.getElementsByClassName('gameSquare'));
-    squares.forEach((square) => {
-      square.removeEventListener('click', squareOnClick);
-      square.removeEventListener('mouseenter', toggleColumnHover);
-      square.removeEventListener('mouseleave', toggleColumnHover);
-    });
-  };
+  // const removeListeners = () => {
+  //   let squares = Array.from(document.getElementsByClassName('gameSquare'));
+  //   console.log('Removing Listeners: ' + squares.length);
+  //   squares.forEach((square) => {
+  //     console.log(square.id);
+  //     square.removeEventListener('click', squareOnClick);
+  //     square.removeEventListener('mouseenter', columnHoverOn);
+  //     square.removeEventListener('mouseleave', columnHoverOff);
+  //   });
+  // };
 
   const resetGame = () => {
     socket.emit('reset', { gameRoomId: id });
