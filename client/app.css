@@ -6,7 +6,8 @@
 
 :root {
   --primary-color: #f09b3a;
-  --secondary-color: #3a8ff0;
+  /* --secondary-color: #3a8ff0; */
+    --secondary-color: blue;
 }
 
 #app {

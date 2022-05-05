@@ -60,7 +60,7 @@ class TurnPayload {
   @SubscribeMessage('reset')
   public async handleReset(client: any) {
     //Reset the game
-    const gameRoomId = client.handshake.query.gameRoomId as number;
+    const gameRoomId = client.handshake.query.room as number;
     await this.gamesService.resetGame(gameRoomId);
     //Send the reset to all clients in the room
     this.server.to(`${gameRoomId}`).emit('reset');

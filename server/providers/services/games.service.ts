@@ -38,6 +38,7 @@ export class GamesService {
   }
 
   async resetGame(gameRoomId: number) {
-    return this.moveRepository.delete(gameRoomId);
+    const moves = await this.moveRepository.find({ where: { gameRoomId } });
+    moves.forEach((move) => this.moveRepository.delete(move));
   }
 }
