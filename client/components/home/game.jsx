@@ -3,16 +3,20 @@ import { Link } from 'react-router-dom';
 export const Game = ({ children, to, action }) => {
   if (to) {
     return (
-      <Link className="game" to={to}>
+    <div className="game">
+      <Link className="p-4" to={to}>
         {children}
       </Link>
+    </div>
     );
   }
   if (action) {
     return (
-      <button className="game" onClick={action}>
+    <div className="new-game">  
+      <button onClick={action}>
         {children}
       </button>
+    </div>
     );
   }
   return null;
