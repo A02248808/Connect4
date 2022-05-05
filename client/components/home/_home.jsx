@@ -47,9 +47,9 @@ export const Home = () => {
 
   return (
     <div className="wrapper bg-gray-400">
-      <div className="flex bg-green-500 items-center justify-between h-10">
-        <div className="flex p-4 cursor-pointer" onClick={logout}>Logout</div>
-        <div className="flex">Welcome to Connect 4!</div>
+      <div className="flex bg-green-500 items-center justify-between h-14">
+        <div className="flex p-4 cursor-pointer font-bold" onClick={logout}>Logout</div>
+        <div className="flex text-4xl font-bold">Welcome to Connect 4, {user.firstName}!</div>
         <div className="flex"></div>
       </div>
       {roles.includes('admin') && (
