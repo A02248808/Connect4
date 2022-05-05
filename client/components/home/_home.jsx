@@ -47,7 +47,7 @@ export const Home = () => {
 
   return (
     <div className="wrapper">
-      <h1>Welcome to Connect4</h1>
+      <h1 className="text-5xl m-3 font-bold">Welcome to Connect4 {user.firstName}!</h1>
       <div className="top-bar">
         <Button className="game" type="button" onClick={logout}>
           Logout
