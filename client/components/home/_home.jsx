@@ -46,18 +46,19 @@ export const Home = () => {
   };
 
   return (
-    <div className="wrapper">
-      <h1>Welcome to Connect4</h1>
-      <div className="top-bar">
-        <Button className="game" type="button" onClick={logout}>
-          Logout
-        </Button>
-        {roles.includes('admin') && (
+    <div className="wrapper bg-gray-400">
+      <div className="flex bg-green-500 items-center justify-between h-10">
+        <div className="flex p-4 cursor-pointer" onClick={logout}>Logout</div>
+        <div className="flex">Welcome to Connect 4!</div>
+        <div className="flex"></div>
+      </div>
+      {roles.includes('admin') && (
+        <div className="top-bar">
           <Button type="button" className="game" onClick={() => navigate('/admin')}>
             Admin
           </Button>
-        )}
-      </div>
+        </div>
+      )}
       <div className="game-select">
         <Game action={() => setIsOpen(true)}>+</Game>
         {gameRooms.map((game) => {
